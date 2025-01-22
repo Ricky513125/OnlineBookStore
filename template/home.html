@@ -1,0 +1,107 @@
+{{define "content"}}
+<div class="columns">
+    <aside class="menu column is-narrow">
+        <p class="menu-label">
+            图书类别
+        </p>
+        <ul class="menu-list">
+            <li><a href="./"> 全部 </a></li>
+            {{range .Categories}}
+            <li><a href="./{{.}}"> {{.}} </a></li>
+            {{end}}
+        </ul>
+    </aside>
+    <main class="column">
+        <form action="" method="get" class="columns is-centered">
+            <div class="field has-addons column is-two-fifths">
+                <div class="control">
+                    <input class="input" type="search" name="info" placeholder="搜索ISBN/书名/作者">
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-info">搜索</button>
+                </div>
+            </div>
+        </form>
+        <div class="columns row is-multiline">
+            {{range .Books}}
+            <div class="column card is-2">
+                <div class="card-image">
+                    <figure class="image is-4by5">
+                        <img src="/cover/{{.Cover.String}}">
+                    </figure>
+                </div>
+                <div class="card-content">
+                    <p>
+                        <span class="is-size-5 has-text-weight-bold">
+                            {{.Name}}
+                        </span>
+                        {{if .Deleted}}
+                        <span class="tag is-warning">无货</span>
+                        {{end}}
+                    </p>
+                    <p> {{.Author}} </p>
+                    <p> ￥{{.Price}} </p>
+                </div>
+                <footer class="card-footer">
+                    <button class="card-footer-item modal-trigger button" data-target="modal-{{.ID}}">
+                        <span class="icon is-small">
+                            <i class="fas fa-book"></i>
+                        </span>
+                        <span>详情</span>
+                    </button>
+                    <button onclick="addCartItem(this, '{{.ID}}')" class="card-footer-item button">
+                        <span class="icon is-small">
+                            <i class="fas fa-cart-plus"></i>
+                        </span>
+                        <span>添加</span>
+                    </button>
+                </footer>
+            </div>
+            <div class="modal" id="modal-{{.ID}}">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                    <header class="modal-card-head">
+                        <h1 class="modal-card-title"> {{.Name}} </h1>
+                        <button class="delete" aria-label="close"></button>
+                    </header>
+                    <section class="modal-card-body">
+                        <p> 作者: {{.Author}} </p>
+                        <p> ISBN: {{.ISBN}} </p>
+                        <p class="content"> {{.Intro}} </p>
+                    </section>
+                    {{if $.IsAdmin}}
+                    <footer class="modal-card-foot">
+                        <a class="button is-link" href="/book/edit/{{.ID}}">编辑</a>
+                        <button class="button">取消</button>
+                    </footer>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+        </div>
+    </main>
+</div>
+
+<script>
+    // document.forms[0].action = location.href
+    async function addCartItem($button, id) {
+        $button.classList.add('is-loading')
+        let response = await fetch(`/cart/book`, {
+            method: 'POST',
+            body: new URLSearchParams({
+                'id': id
+            })
+        })
+        switch (response.status) {
+            case 401:
+                alert('请先登录')
+                location.assign('/user/log-in')
+                break;
+            case 200:
+                alert('添加成功')
+                break;
+        }
+        $button.classList.remove('is-loading')
+    }
+</script>
+{{end}}

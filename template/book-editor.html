@@ -1,0 +1,114 @@
+{{define "content"}}
+<script defer src="/js/upload.js"></script>
+<main class="section">
+    <div class="container box">
+        {{if .Cover.Valid}}
+        <figure class="image is-24x16">
+            <img src="/cover/{{.Cover.String}}">
+        </figure>
+        {{end}}
+
+        <form action="./" method="post" enctype="multipart/form-data">
+            <input type="text" name="id" value="{{.ID}}" hidden>
+
+            <div class="field">
+                <label class="label">书名</label>
+                <div class="control">
+                    <input class="input" type="text" name="name" value="{{.Name}}" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">ISBN</label>
+                <div class="control">
+                    <input class="input" type="text" name="isbn" value="{{.ISBN}}" required pattern="\d{13}"
+                        title="请输入13位ISBN码">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">作者</label>
+                <div class="control">
+                    <input class="input" type="text" name="author" value="{{.Author}}" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">价格</label>
+                <div class="control">
+                    <input class="input" type="number" name="price" value="{{.Price}}" required min="0" step="0.01">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">类别</label>
+                <div class="control">
+                    <input class="input" type="text" name="categories" {{with .Categories}} value="{{.}}" {{end}}
+                        placeholder="使用,分割类目">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">简介</label>
+                <div class="control">
+                    <textarea class="textarea" name="intro" required>{{.Intro.String}}</textarea>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="file has-name">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="cover" accept="image/*">
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">
+                                选择图片
+                            </span>
+                        </span>
+                        <span class="file-name"></span>
+                    </label>
+                </div>
+            </div>
+
+
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" {{if .Deleted}} checked {{end}} name="deleted">
+                        没有库存
+                    </label>
+                </div>
+            </div>
+
+            <div class="field is-grouped is-grouped-centered">
+                <div class="control">
+                    <button type="submit" class="button is-link">
+                        <span class="icon">
+                            <i class="fa fa-save"></i>
+                        </span>
+                        <span>
+                            保存
+                        </span>
+                    </button>
+                </div>
+                <div class="control">
+                    <button type="reset" class="button">
+                        <span class="icon">
+                            <i class="fa fa-undo"></i>
+                        </span>
+                        <span>重置</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<style>
+    .box {
+        max-width: 36rem !important;
+    }
+</style>
+{{end}}

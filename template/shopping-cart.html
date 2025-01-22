@@ -1,0 +1,131 @@
+{{define "content"}}
+<footer class="footer">
+    <main class="section">
+        <form class="container" action="/order" method="post">
+            <table class="table is-striped is-hoverable is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>选取</th>
+                        <th>商品</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>小计</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody onchange="calcTotal()">
+                    {{range .CartBooks}}
+                    <tr id="tr-{{.ID}}">
+                        <td><input type="checkbox" name="booksID" value="{{.ID}}"></td>
+                        <td>《{{.Name}}》{{.Author}}</td>
+                        <td>{{.Price}}</td>
+                        <td>
+                            <div class="control">
+                                <input class="input" type="number" value="{{.Quantity}}"
+                                    onchange="update('{{.ID}}', this.value)" required min="1">
+                            </div>
+                        </td>
+                        <td>{{.Subtotal}}</td>
+                        <td><button class="button is-danger" onclick="update('{{.ID}}', 0)">删除</button></td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <label class="checkbox">
+                            全选
+                            <input type="checkbox" onchange="toggle(this.checked)">
+                        </label>
+                    </div>
+                    <div class="level-item">
+                        <div class="select">
+                            <select name="addressID" required>
+                                <option value="">选择收货地址</option>
+                                {{range .Addresses}}
+                                <option value="{{.ID}}">
+                                    {{- .Consignee -}}，{{- .Phone -}}：
+                                    {{- .Province -}}-{{- .City -}}-{{- .County -}}-{{- .TownShip -}}-{{- .Detail -}}
+                                </option>
+                                {{end}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <p class="level-item">
+                        合计：￥<span id="total">0</span>
+                    </p>
+                    <p class="level-item">
+                        <button class="button is-link" type="submit">立即下单</button>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </main>
+</footer>
+<style>
+    th:nth-child(4) {
+        min-width: 5rem;
+    }
+</style>
+<script>
+    function toggle(checked) {
+        document.getElementsByName('booksID')?.forEach($checkbox => $checkbox.checked = checked)
+        calcTotal()
+    }
+
+    async function update(id, quantity) {
+        let $tr = document.getElementById('tr-' + id)
+        $loading = $tr.querySelector(quantity == 0 ? 'button' : '.control')
+        $loading.classList.add('is-loading')
+
+        let response = await fetch('book', {
+            method: 'PUT',
+            body: new URLSearchParams({
+                'id': id,
+                'quantity': quantity
+            })
+        })
+        $loading.classList.remove('is-loading')
+        if (response.ok) {
+            alert('修改成功')
+            if (quantity == 0) {
+                $tr.remove()
+            } else {
+                let $cells = $tr.cells
+                $cells[4].textContent = (Number($cells[2].textContent) * Number(quantity)).toFixed(2)
+            }
+            calcTotal()
+        } else {
+            alert('请求失败，请稍后重试')
+        }
+    }
+
+    let $total = document.getElementById('total')
+
+    function calcTotal() {
+        let $tbody = document.querySelector('tbody')
+        let total = 0
+        for (const $tr of $tbody.rows) {
+            if ($tr.querySelector('input').checked) {
+                $tr.classList.add('is-selected')
+                total += Number($tr.cells[4].textContent)
+            } else {
+                $tr.classList.remove('is-selected')
+            }
+        }
+        $total.textContent = total.toFixed(2)
+    }
+
+    document.forms[0].addEventListener('submit', ev => {
+        if ($total.textContent == '0') {
+            alert('至少选择一件商品！')
+            ev.preventDefault()
+        }
+    })
+
+</script>
+{{end}}

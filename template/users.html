@@ -1,0 +1,76 @@
+{{define "content"}}
+<div class="columns section">
+	<aside class="menu column is-narrow">
+		<p class="menu-label">
+			用户角色
+		</p>
+		<ul class="menu-list">
+			<li><a href="?role=user"> 用户 </a></li>
+			<li><a href="?role=admin"> 管理员 </a></li>
+		</ul>
+	</aside>
+	<main class="column">
+		<table class="table is-bordered is-hoverable is-fullwidth">
+			<tr>
+				<th>用户ID</th>
+				<th>用户名</th>
+				<th>创建时间</th>
+				{{if .IsAdmin}}
+				<th>用户管理权限</th>
+				<th>图书管理权限</th>
+				<th>订单管理权限</th>
+				<th>所有权限</th>
+				{{end}}
+				<th>管理用户</th>
+			</tr>
+			{{range .Users}}
+			<tr>
+				<td>{{.ID}}</td>
+				<td>{{.Name}}</td>
+				<td>{{.CreationTime}}</td>
+				{{with .Privileges}}
+				<td>
+					{{if (call $.HasPriv . "user")}}
+					<span class="icon">
+						<i class="fas fa-check"></i>
+					</span>
+					{{end}}
+				</td>
+				<td>
+					{{if (call $.HasPriv . "book")}}
+					<span class="icon">
+						<i class="fas fa-check"></i>
+					</span>
+					{{end}}
+				</td>
+				<td>
+					{{if (call $.HasPriv . "order")}}
+					<span class="icon">
+						<i class="fas fa-check"></i>
+					</span>
+					{{end}}
+				</td>
+				<td>
+					{{if (call $.HasPriv . "all")}}
+					<span class="icon">
+						<i class="fas fa-check"></i>
+					</span>
+					{{end}}
+				</td>
+				{{end}}
+				<td>
+					<a href="/admin/user/{{.ID}}" class="button is-link">
+						<span class="icon-text">
+							<span class="icon">
+								<i class="fas fa-edit"></i>
+							</span>
+							<span>编辑</span>
+						</span>
+					</a>
+				</td>
+			</tr>
+			{{end}}
+		</table>
+	</main>
+</div>
+{{end}}

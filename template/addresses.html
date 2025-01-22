@@ -1,0 +1,73 @@
+{{define "content"}}
+<div class="section">
+    <article class="message is-info">
+        <div class="message-body">
+            <span class="icon">
+                <i class="fas fa-info-circle"></i>
+            </span>
+            已保存了<span id="used">{{.Used}}</span>条地址，
+            还能保存<span id="free">{{.Free}}</span>条数据。
+        </div>
+    </article>
+    <table class="table is-bordered is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th>收货人</th>
+                <th>电话号码</th>
+                <th>省</th>
+                <th>市</th>
+                <th>县</th>
+                <th>乡</th>
+                <th>详细地址</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Addresses}}
+            <tr id="{{.ID}}">
+                <td>{{.Consignee}}</td>
+                <td>{{.Phone}}</td>
+                <td>{{.Province}}</td>
+                <td>{{.City}}</td>
+                <td>{{.County}}</td>
+                <td>{{.TownShip}}</td>
+                <td>{{.Detail}}</td>
+                <td class="field is-groued">
+                    <a class="button is-link is-small" href="/user/address/{{.ID}}">
+                        编辑
+                    </a>
+                    <button class="button is-danger is-small" onclick="deleteAddress('{{.ID}}')">
+                        删除
+                    </button>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+<style>
+    .container {
+        max-width: 48rem !important;
+    }
+</style>
+<script>
+    async function deleteAddress(id) {
+        if (confirm("确定要删除该地址吗？")) {
+            const response = await fetch(`./${id}`, {
+                method: 'DELETE'
+            })
+
+            if (response.ok) {
+                alert("删除成功")
+                document.getElementById(id).remove()
+                const $used = document.getElementById("used")
+                $used.textContent = Number($used.textContent) - 1
+                const $free = document.getElementById("free")
+                $free.textContent = Number($free.textContent) + 1
+            } else {
+                alert("删除失败")
+            }
+        }
+    }
+</script>
+{{end}}

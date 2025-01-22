@@ -1,0 +1,75 @@
+{{define "content"}}
+<main class="section">
+	<div class="container box">
+		{{with .User}}
+		<ul class="block content">
+			<li>用户ID：{{.ID}}</li>
+			<li>用户名：{{.Name}}</li>
+			<li>创建时间：{{.CreationTime}}</li>
+		</ul>
+		<form action="./" method="post">
+			<input type="text" hidden name="user_id" value="{{.ID}}">
+			<div class="field is-grouped">
+				<div class="control">
+					<label class="checkbox">
+						<input type="checkbox" name="privileges" value="book" {{if not (hasPrivilege "book" ) }}
+							disabled {{end}} {{if (call $.HasPriv .Privileges "book" )}} checked {{end}}>
+						图书管理
+					</label>
+				</div>
+				<div class="control">
+					<label class="checkbox">
+						<input type="checkbox" name="privileges" value="order" {{if not (hasPrivilege "order" ) }}
+							disabled {{end}} {{if (call $.HasPriv .Privileges "order" )}} checked {{end}}>
+						订单管理
+					</label>
+				</div>
+				<div class="control">
+					<label class="checkbox">
+						<input type="checkbox" name="privileges" value="user" {{if not (hasPrivilege "user" ) }}
+							disabled {{end}} {{if (call $.HasPriv .Privileges "user" )}} checked {{end}}>
+						用户管理
+					</label>
+				</div>
+				<div class="control">
+					<label class="checkbox">
+						<input type="checkbox" name="privileges" value="all" onchange="toggle()" {{if not
+							(hasPrivilege "all" ) }} disabled {{end}} {{if (call $.HasPriv .Privileges "all" )}} checked
+							{{end}}>
+						所有权限
+					</label>
+				</div>
+			</div>
+
+			<div class="field is-grouped is-grouped-centered">
+				<div class="control">
+					<button class="button is-primary" type="submit">提交</button>
+				</div>
+				<div class="control">
+					<button class="button is-danger" type="reset">重置</button>
+				</div>
+			</div>
+		</form>
+		{{end}}
+	</div>
+</main>
+<script>
+	function toggle() {
+		$checkboxes = document.getElementsByName("privileges");
+		if ($checkboxes[3].checked) {
+			for (var i = 0; i < 3; i++) {
+				$checkboxes[i].disabled = true
+			}
+		} else {
+			for (var i = 0; i < 3; i++) {
+				$checkboxes[i].disabled = $checkboxes[i].getAttribute("disabled") == null
+			}
+		}
+	}
+</script>
+<style>
+	.box {
+		max-width: 25rem !important;
+	}
+</style>
+{{end}}

@@ -1,0 +1,92 @@
+{{define "navbar"}}
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="https://bulma.io">
+            <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar-menu">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbar-menu" class="navbar-menu">
+        <div class="navbar-start">
+            <a href="/" class="navbar-item">
+                首页
+            </a>
+
+            {{if .IsLoggedIn}}
+            <a href="/cart/books" class="navbar-item">
+                购物车
+            </a>
+
+            <a href="/user/orders" class="navbar-item">
+                订单
+            </a>
+
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    账户管理
+                </a>
+
+                <div class="navbar-dropdown">
+                    <a href="/user/address" class="navbar-item">
+                        收货地址
+                    </a>
+                    <a href="/user/password" class="navbar-item">
+                        修改密码
+                    </a>
+                    {{if hasPrivilege "user"}}
+                    <a href="/admin/user" class="navbar-item">
+                        权限管理
+                    </a>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">
+                    更多
+                </a>
+
+                <div class="navbar-dropdown">
+                    <a href="mailto:nie_wang@outlook.com" class="navbar-item" target="_blank" rel="noopener noreferrer">
+                        联系客服
+                    </a>
+                    <a class="navbar-item">
+                        官方TG群
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navbar-end">
+        <div class="navbar-item">
+            <div class="buttons">
+                {{range .Buttons}}
+                <a href="{{.URL}}" class="button {{.Class}}">
+                    {{.Text}}
+                </a>
+                {{end}}
+                {{if .IsLoggedIn}}
+                <a href="/user/log-out" class="button is-light is-primary">
+                    安全登出
+                </a>
+                {{else}}
+                <a href="/user/sign-up" class="button is-primary">
+                    <strong>注册</strong>
+                </a>
+                <a href="/user/log-in" class="button is-light">
+                    登录
+                </a>
+                {{end}}
+            </div>
+        </div>
+    </div>
+</nav>
+{{end}}

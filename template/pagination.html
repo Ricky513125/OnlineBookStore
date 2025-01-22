@@ -1,0 +1,35 @@
+<nav class="pagination" role="navigation" aria-label="pagination">
+    {{if gt .Cur 1}}
+    <a data-page="{{.Cur}}" class="pagination-previous">前一页</a>
+    {{end}}
+    {{if lt .Cur .Total}}
+    <a data-page="{{.Next}}" class="pagination-next">下一页</a>
+    {{end}}
+    <ul class="pagination-list">
+        {{if gt .Pre 1}}
+        <li><a data-page="1" class="pagination-link">1</a></li>
+        <li><span class="pagination-ellipsis">&hellip;</span></li>
+        {{end}}
+        {{if gt .Pre 0}}
+        <li><a data-page="{{.Pre}}" class="pagination-link">{{.Pre}}</a></li>
+        {{end}}
+        <li><a data-page="{{.Cur}}" class="pagination-link is-current">{{.Cur}}</a>
+        </li>
+        {{if lt .Cur .Total}}
+        <li><a data-page="{{.Next}}" class="pagination-link">{{.Next}}</a></li>
+        {{end}}
+        {{if lt .Next .Total}}
+        <li><span class="pagination-ellipsis">&hellip;</span></li>
+        <li><a data-page="{{.Total}}" class="pagination-link">{{.Total}}</a></li>
+        {{end}}
+    </ul>
+</nav>
+
+<script>
+    let pagination = document.querySelector('nav.pagination')
+    let url = new URL(location)
+    for (const a of pagination.getElementsByTagName('a')) {
+        url.searchParams.set('page', a.dataset.page)
+        a.href = url
+    }
+</script>

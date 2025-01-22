@@ -1,0 +1,30 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://cdn.staticfile.org/bulma/0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="http://cdn.staticfile.org/font-awesome/5.15.4/css/all.min.css">
+    <script defer src="/js/modal.js"></script>
+    <script defer src="/js/navbar.js"></script>
+    <style>
+        body {
+            margin: auto;
+            max-width: 95vw;
+        }
+    </style>
+</head>
+
+<body>
+    {{template "navbar" .}}
+    {{template "content" .Data}}
+    {{with .Paging}}
+    {{template "pagination.html" .}}
+    {{end}}
+</body>
+
+</html>
+{{end}}

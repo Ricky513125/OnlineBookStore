@@ -1,0 +1,103 @@
+{{define "content"}}
+<main class="section">
+    <form class="container box" method="post">
+        <div class="field">
+            <label class="label">用户名</label>
+            <div class="control has-icons-left">
+                <input name="name" class="input" type="text" required placeholder="输入用户名">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                </span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">密码</label>
+            <div class="control has-icons-left">
+                <input name="passwd" class="input" type="password" required placeholder="输入密码">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                </span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">重复密码</label>
+            <div class="control has-icons-left has-icons-right">
+                <input class="input" oninput="checkSame(this)" type="password" required placeholder="重复密码">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                </span>
+                <span class="icon is-small is-right">
+                    <i id="icon-check" class="fas"></i>
+                </span>
+                <p id="message" hidden class="help is-danger">两次输入的密码不相同</p>
+            </div>
+        </div>
+
+        <div class="field is-grouped is-grouped-centered">
+            <div class="control">
+                <button type="submit" class="button is-link" disabled>提交</button>
+            </div>
+            <div class="control">
+                <button type="reset" class="button is-link is-light">重置</button>
+            </div>
+        </div>
+    </form>
+</main>
+
+<style>
+    .box {
+        max-width: 360px !important;
+    }
+</style>
+
+<script>
+    let $form = document.forms[0]
+    let $i = document.getElementById('icon-check')
+    let $p = document.getElementById('message')
+    let $button = document.getElementsByTagName('button')[0]
+    $p.style.display = 'none'
+
+    function checkSame($input) {
+        if ($form.passwd.value == $input.value) {
+            $i.classList.remove('fa-exclamation-triangle')
+            $i.classList.add('fa-check')
+            $input.classList.add('is-success')
+            $input.classList.remove('is-danger')
+            $p.style.display = 'none'
+            $button.disabled = false
+        } else {
+            $i.classList.add('fa-exclamation-triangle')
+            $i.classList.remove('fa-check')
+            $input.classList.add('is-danger')
+            $input.classList.remove('is-success')
+            $p.style.display = ''
+            $button.disabled = true
+        }
+    }
+
+    $form.onsubmit = async ev => {
+        ev.preventDefault()
+
+        $form.querySelectorAll('.button').forEach($button => {
+            $button.classList.add('is-loading')
+        })
+        let response = await fetch('', {
+            method: 'POST',
+            body: new URLSearchParams(new FormData($form))
+        })
+
+        if (response.ok) {
+            alert('注册成功')
+            location.replace('/')
+        } else {
+            alert('注册失败，用户名已被占用')
+        }
+
+        $form.querySelectorAll('.button').forEach($button => {
+            $button.classList.remove('is-loading')
+        })
+    }
+</script>
+{{end}}

@@ -1,0 +1,49 @@
+{{define "content"}}
+<main class="section">
+    {{range .}}
+    <div class="container box">
+        <div class="level">
+            <div class="level-item">
+                <a class="button level-item is-link" href="/order/{{.ID}}">
+                    订单：{{.ID}}
+                </a>
+            </div>
+            <p class="level-item">
+                <span class="tag is-info">
+                    {{.Status}}
+                </span>
+            </p>
+        </div>
+        <table class="table is-fullwidth">
+            <thead>
+                <tr>
+                    <th>商品名</th>
+                    <th>数量</th>
+                    <th>单价</th>
+                    <th>小计</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Items}}
+                <tr>
+                    <td> {{.Name}} </td>
+                    <td> {{.Quantity}} </td>
+                    <td> {{.Price}} </td>
+                    <td> {{.Subtotal}} </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        <div class="level">
+            <p class="level-item">{{.Time}}</p>
+            <p class="level-item">总计：￥{{.Total}}</p>
+        </div>
+    </div>
+    {{end}}
+</main>
+<style>
+    .box {
+        max-width: 480px !important;
+    }
+</style>
+{{end}}

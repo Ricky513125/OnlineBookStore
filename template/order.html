@@ -1,0 +1,109 @@
+{{define "content"}}
+<main class="section">
+    <div class="container box">
+        <div class="level">
+            <div class="level-left">
+                <p class="level-item">
+                    单号：<strong>{{.Order.ID}}</strong>
+                </p>
+            </div>
+            <div class="level-right">
+                <p class="level-item">
+                    <span class="tag is-info">{{.StatusCN}}</span>
+                </p>
+            </div>
+        </div>
+        <table class="table is-striped is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>封面</th>
+                    <th>书名</th>
+                    <th>单价</th>
+                    <th>数量</th>
+                    <th>小计</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Items}}
+                <tr>
+                    <td>
+                        <figure class="image is-96x96">
+                            <img src="/cover/{{.Cover.String}}">
+                        </figure>
+                    </td>
+                    <td>{{.Name}}</td>
+                    <td>{{.Price}}</td>
+                    <td>{{.Quantity}}</td>
+                    <td>{{.Subtotal}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+
+        <div class="content">
+            <p>订单金额：<strong>￥{{.Total}}</strong></p>
+            <p>下单时间：{{.Time}}</p>
+            {{with .Address}}
+            <p>收货地址：{{.Province}}-{{.City}}-{{.County}}-{{.TownShip}}-{{.Detail}}</p>
+            <p>电话号码：{{.Phone}}</p>
+            {{end}}
+        </div>
+
+        <div class="field is-grouped is-grouped-centered">
+            {{if eq .Status "unpaid"}}
+            <div class="control">
+                <button class="button is-link" onclick="update(this, 'to_be_ship')">
+                    付款
+                </button>
+            </div>
+            <div class="control">
+                <button class="button is-danger" onclick="update(this, 'failed')">
+                    取消
+                </button>
+            </div>
+            {{else if and (eq .Status "to_be_ship") .IsAdmin}}
+            <div class="control">
+                <button class="button is-primary" onclick="update(this, 'shipped')">
+                    已发货
+                </button>
+                <button class="button is-danger" onclick="update(this, 'failed')">
+                    取消
+                </button>
+            </div>
+            {{else if eq .Status "shipped"}}
+            <div class="control">
+                <button class="button is-success" onclick="update(this, 'success')">
+                    已收货
+                </button>
+            </div>
+            {{end}}
+        </div>
+    </div>
+</main>
+<style>
+    .box {
+        max-width: 640px !important;
+    }
+</style>
+<script>
+    async function update($btm, status) {
+        $btm.classList.add('is-loading')
+
+        let response = await fetch('/order', {
+            method: 'PUT',
+            body: new URLSearchParams({
+                'id': '{{.Order.ID}}',
+                'status': status
+            })
+        })
+
+        $btm.classList.remove('is-loading')
+        if (response.ok) {
+            alert('修改成功')
+            location.reload()
+        } else {
+            alert('请求失败，请稍后重试')
+        }
+    }
+</script>
+{{end}}

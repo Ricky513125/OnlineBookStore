@@ -1,0 +1,32 @@
+{
+//	添加压力测试配置
+	"output": "stdout",
+	"steps": [
+		{
+			"id": 1,
+			"url": "http://localhost:8080"
+		},
+		{
+			"id": 2,
+			"url": "http://localhost:8080/index/Jeanette"
+		},
+		{
+			"id": 3,
+			"url": "http://localhost:8080/user/login-in",
+			"method": "POST",
+			"payload_file": "admin.txt"
+		},
+		{
+			"id": 4,
+			"url": "http://localhost:8080/cart/books"
+		},
+		{
+			"id": 5,
+			"url": "http://localhost:8080/user/orders"
+		},
+		{
+			"id": 6,
+			"url": "http://localhost:8080/user/address"
+		}
+	]
+}
