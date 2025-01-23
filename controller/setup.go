@@ -3,9 +3,9 @@ package controller
 import (
 	"net/http"
 
-	"github.com/Bit0r/online-store/conf"
-	"github.com/Bit0r/online-store/middleware"
-	"github.com/Bit0r/online-store/view"
+	"github.com/Ricky513125/OnlineBookStore/conf"
+	"github.com/Ricky513125/OnlineBookStore/middleware"
+	"github.com/Ricky513125/OnlineBookStore/view"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"

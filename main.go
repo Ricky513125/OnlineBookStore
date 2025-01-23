@@ -1,6 +1,6 @@
 package main
 
-import "github.com/Bit0r/online-store/controller"
+import "github.com/Ricky513125/OnlineBookStore/controller"
 
 func main() {
 	controller.Setup()

@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"github.com/Bit0r/online-store/middleware"
-	"github.com/Bit0r/online-store/services"
+	"github.com/Ricky513125/OnlineBookStore/middleware"
+	"github.com/Ricky513125/OnlineBookStore/services"
 )
 
 func setupAdmin() {
